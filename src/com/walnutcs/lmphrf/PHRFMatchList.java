@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -19,7 +20,8 @@ public class PHRFMatchList {
 	private List<PHRFBoatEntry> phrfBoats = new ArrayList<PHRFBoatEntry>();
 	private PHRFBoatEntry selectedBoat;
 	
-	private static String SEARCH_URL = "https://www.lmphrf.org/index.php/display-a-handicap";
+//	private static String SEARCH_URL = "https://www.lmphrf.org/index.php/display-a-handicap";
+	private static String SEARCH_URL = "https://mwphrf.org/index.php/display-a-handicap";
 	
 	public PHRFMatchList(BoatEntry entry) {
 		this.entry = entry;
@@ -169,10 +171,10 @@ public class PHRFMatchList {
 				}
 				
 				// Get the values for the certificate
-				int valueBHCP = Integer.parseInt(rowData.get(BHCPcol).text());
-				int valueHCP = Integer.parseInt(rowData.get(HCPcol).text());
-				int valueDHCP = Integer.parseInt(rowData.get(DHCPcol).text());
-				int valueNSHCP = Integer.parseInt(rowData.get(NSHCPcol).text());
+				int valueBHCP = Integer.parseInt(rowData.get(BHCPcol).text().replaceAll("[^-0-9]+", ""));
+				int valueHCP = Integer.parseInt(rowData.get(HCPcol).text().replaceAll("[^-0-9]+", ""));
+				int valueDHCP = Integer.parseInt(rowData.get(DHCPcol).text().replaceAll("[^-0-9]+", ""));
+				int valueNSHCP = Integer.parseInt(rowData.get(NSHCPcol).text().replaceAll("[^-0-9]+", ""));
 				
 				String urlCell = rowData.get(urlCol).select("a").attr("href");
 				

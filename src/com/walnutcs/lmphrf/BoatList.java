@@ -13,7 +13,6 @@ import java.util.TreeSet;
 import javax.swing.table.AbstractTableModel;
 
 import com.walnutcs.lmphrf.PHRFCertificateValues.PHRFValue;
-import com.walnutcs.lmphrf.PHRFCertificateValues.PHRFVariable;
 
 /**
  * @author George Chlipala

@@ -116,7 +116,7 @@ public class LMPHRFValidator {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 800, 550);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setTitle("LMPHRF Validator");
+		frame.setTitle("MWPHRF Validator");
 		
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
@@ -176,7 +176,7 @@ public class LMPHRFValidator {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(frame, 
-						"<html><h1>LMPHRF Validator</h1><p>Tool to retrive/validate LMPHRF (https://www.lmphrf.org) ratings for a set of boats</p><br><p>&copy; 2021 George Chlipala</p></html>",
+						"<html><h1>MWPHRF Validator</h1><p>Tool to retrive/validate MWPHRF (https://www.lmphrf.org) ratings for a set of boats</p><br><p>&copy; 2021 George Chlipala</p></html>",
 						"About LMPRHF Validator",
 						JOptionPane.PLAIN_MESSAGE);
 			}
@@ -217,8 +217,8 @@ public class LMPHRFValidator {
 		horizontalBox = Box.createHorizontalBox();		
 		verticalBox.add(horizontalBox);		
 		
-		// Create button to trigger load of ratings from LMPHRF
-		JButton loadButton = new JButton("Load ratings from LMPHRF");
+		// Create button to trigger load of ratings from MWPHRF
+		JButton loadButton = new JButton("Load ratings from MWPHRF");
 		loadButton.setAction(new LoadRatingsAction());
 		horizontalBox.add(loadButton);
 		
@@ -257,7 +257,7 @@ public class LMPHRFValidator {
 						if ( selCert != null ) {
 							
 							try {
-								URL pdfURL = new URL("https://www.lmphrf.org/" + selCert.getURL());
+								URL pdfURL = new URL("https://mwphrf.org/" + selCert.getURL());
 								CertificateView.displayCertificate(pdfURL, 
 										selBoat.toString().concat(String.format(" %d", selCert.getYear())));
 
@@ -844,7 +844,7 @@ public class LMPHRFValidator {
 					
 					BoatList boatList = BoatList.getInstance();
 					
-					statusText.setText("Loading LMPHRF ratings");
+					statusText.setText("Loading MWPHRF ratings");
 					entryTable.setEnabled(false);
 					
 					for ( int row = 0; row < entryTable.getRowCount() ; row++ ) {
@@ -861,7 +861,7 @@ public class LMPHRFValidator {
 					progressBar.setValue(0);
 					thisButton.setEnabled(true);
 //					ratingsTable.repaint();
-					statusText.setText("LMPHRF Ratings loaded.");
+					statusText.setText("MWPHRF Ratings loaded.");
 				}
 			};
 			phrfSearch.execute();
@@ -886,7 +886,7 @@ public class LMPHRFValidator {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			BoatList boatList = BoatList.getInstance();
-			statusText.setText("Selecting LMPHRF rating");
+			statusText.setText("Selecting MWPHRF rating");
 			
 			for ( int row = 0; row < entryTable.getRowCount() ; row++ ) {
 				progressBar.setValue(row);

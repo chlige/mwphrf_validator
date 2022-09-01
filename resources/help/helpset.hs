@@ -5,7 +5,7 @@
 <helpset version="2.0">
 
 	<!-- title --> 
-   <title>LMPHRF Validator - Help</title>
+   <title>MWPHRF Validator - Help</title>
    
    <!-- maps --> 
    <maps>
@@ -67,7 +67,7 @@
        <name>main window</name>
        <size width="800" height="600" /> 
        <location x="200" y="200" />
-       <title>LMPHRF Validator Help</title>
+       <title>MWPHRF Validator Help</title>
        <toolbar>
            <helpaction>javax.help.BackAction</helpaction>
            <helpaction>javax.help.ForwardAction</helpaction>
