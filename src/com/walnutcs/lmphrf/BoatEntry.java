@@ -113,9 +113,12 @@ public class BoatEntry {
 	// Default is only to find matches based on sail number and yacht name.  If no boats are found, then try by type.
 	public void findMatches() throws IOException { 
 		this.phrfMatches.clearBoats();
-		this.phrfMatches.runSearch("sail", this.getSailNumber());	
-		this.phrfMatches.runSearch("name", this.getYachtName());
-		
+		this.phrfMatches.runSearch("name", this.getYachtName(), true);
+
+		if ( this.phrfMatches.getPHRFBoats().size() == 0 || this.phrfMatches.getSelectedBoat() == null ) {
+			this.phrfMatches.runSearch("sail", this.getSailNumber());	
+		}
+			
 		if ( this.phrfMatches.getPHRFBoats().size() == 0 ) {
 			this.phrfMatches.runSearch("type", this.getMakeModel());
 		}

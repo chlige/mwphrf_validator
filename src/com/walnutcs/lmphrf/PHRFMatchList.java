@@ -71,7 +71,11 @@ public class PHRFMatchList {
 		this.phrfBoats.clear();
 	}
 	
-	void runSearch(String queryType, String queryValue) throws IOException {		
+	void runSearch(String queryType, String queryValue) throws IOException {
+		this.runSearch(queryType, queryValue, false);
+	}
+	
+	void runSearch(String queryType, String queryValue, boolean exactMatch) throws IOException {		
 		// Setup the query data
 		
 		/*
@@ -171,6 +175,7 @@ public class PHRFMatchList {
 				}
 				
 				// Get the values for the certificate
+				// For right now, just strip off any notes/restrictions for the numbers
 				int valueBHCP = Integer.parseInt(rowData.get(BHCPcol).text().replaceAll("[^-0-9]+", ""));
 				int valueHCP = Integer.parseInt(rowData.get(HCPcol).text().replaceAll("[^-0-9]+", ""));
 				int valueDHCP = Integer.parseInt(rowData.get(DHCPcol).text().replaceAll("[^-0-9]+", ""));
@@ -187,12 +192,23 @@ public class PHRFMatchList {
 		if ( this.phrfBoats.size() == 1 ) {
 			this.selectedBoat = this.phrfBoats.get(0);
 		} else {
+			List<PHRFBoatEntry> possBoats = new ArrayList<PHRFBoatEntry>();
 			ENTRY_LOOP: for ( PHRFBoatEntry anEntry : this.phrfBoats ) {
 				if ( anEntry.getSailNumber().equalsIgnoreCase(this.entry.getSailNumber()) &&
 						anEntry.getYachtName().equalsIgnoreCase(this.entry.getYachtName()) ) {
 					this.selectedBoat = anEntry;
+					possBoats.clear();
 					break ENTRY_LOOP;
+				} else if ( ! exactMatch ) {	
+					if ( anEntry.getSailNumber().equalsIgnoreCase(this.entry.getSailNumber()) ) {
+						possBoats.add(anEntry);
+					} else if ( anEntry.getYachtName().equalsIgnoreCase(this.entry.getYachtName()) ) {
+						possBoats.add(anEntry);
+					}
 				}
+			}
+			if ( possBoats.size() == 1 ) {
+				this.selectedBoat = possBoats.get(0);
 			}
 		}
 	}
