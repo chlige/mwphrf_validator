@@ -6,10 +6,10 @@
   "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
   <tocitem image="toplevelfolder" 
-           text="LMPHRF Validator">
+           text="MWPHRF Validator">
      <tocitem target="import" text="Import data"/>
  	 <tocitem target="table_view" text="Viewing and filtering entries"/>     
- 	 <tocitem target="find_ratings" text="Find LMPRF Ratings"/>
+ 	 <tocitem target="find_ratings" text="Find MWPHRF Ratings"/>
  	 <tocitem target="export" text="Export data"/>
   </tocitem>
 </toc> 
