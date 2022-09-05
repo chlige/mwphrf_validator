@@ -72,6 +72,19 @@ public class BoatList extends AbstractTableModel {
 //		return false;
 	}
 
+	
+	
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		switch ( columnIndex ) {
+		case 7: return PHRFMatchList.class;
+		case 8: return PHRFCertificateList.class;
+		case 9: return PHRFCertificateValues.class;
+		default:
+			return String.class;
+		}
+	}
+
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		BoatEntry entry = this.entries.get(rowIndex);

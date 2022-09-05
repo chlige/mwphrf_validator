@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class PHRFCertificateValues {
+public class PHRFCertificateValues implements Comparable<PHRFCertificateValues> {
 
 	public enum PHRFVariable {
 		BHCP, DHCP, HCP, NSHCP
@@ -90,6 +90,13 @@ public class PHRFCertificateValues {
 		} else {
 			return this.getSelectedValue().toString();
 		}
+	}
+
+	@Override
+	public int compareTo(PHRFCertificateValues o) {
+		if ( this.selVariable != null )
+			return this.getSelectedValue().compareTo(o.getSelectedValue());
+		return -1;
 	}
 
 	

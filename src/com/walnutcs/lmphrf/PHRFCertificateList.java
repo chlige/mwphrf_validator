@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class PHRFCertificateList {
+public class PHRFCertificateList implements Comparable<PHRFCertificateList> {
 
 	private SortedMap<Integer, PHRFCertificate> certificates = new TreeMap<Integer, PHRFCertificate>();
 	private Integer selYear = null;
@@ -57,6 +57,20 @@ public class PHRFCertificateList {
 			return String.format("%d years", this.certificates.size());
 		} else {
 			return String.format("%d", this.selYear);
+		}
+	}
+
+	@Override
+	public int compareTo(PHRFCertificateList o) {
+		if ( this.selYear != null ) {
+			if ( o.selYear != null )
+				return this.selYear.compareTo(o.selYear);
+			else
+				return 1;
+		} else if ( o.selYear != null ) {
+			return -1;
+		} else {
+			return this.certificates.size() - o.certificates.size();
 		}
 	}
 
