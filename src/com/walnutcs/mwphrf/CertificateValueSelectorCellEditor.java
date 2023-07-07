@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.walnutcs.lmphrf;
+package com.walnutcs.mwphrf;
 
 import java.awt.Component;
 
@@ -9,7 +9,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 
-import com.walnutcs.lmphrf.PHRFCertificateValues.PHRFValue;
+import com.walnutcs.mwphrf.PHRFCertificateValues.PHRFValue;
 
 /**
  * @author George Chlipala

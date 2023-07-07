@@ -1,4 +1,4 @@
-package com.walnutcs.lmphrf;
+package com.walnutcs.mwphrf;
 
 import java.io.IOException;
 import java.util.List;

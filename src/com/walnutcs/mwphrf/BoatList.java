@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.walnutcs.lmphrf;
+package com.walnutcs.mwphrf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.TreeSet;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.walnutcs.lmphrf.PHRFCertificateValues.PHRFValue;
+import com.walnutcs.mwphrf.PHRFCertificateValues.PHRFValue;
 
 /**
  * @author George Chlipala

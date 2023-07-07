@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.walnutcs.lmphrf;
+package com.walnutcs.mwphrf;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -24,7 +24,7 @@ import javax.swing.JTextField;
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PagePanel;
-import com.walnutcs.lmphrf.PHRFCertificateValues.PHRFVariable;
+import com.walnutcs.mwphrf.PHRFCertificateValues.PHRFVariable;
 
 /**
  * @author George Chlipala

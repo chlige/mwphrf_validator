@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.walnutcs.lmphrf;
+package com.walnutcs.mwphrf;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -53,14 +53,14 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellType;
 
-import com.walnutcs.lmphrf.PHRFCertificateValues.PHRFValue;
-import com.walnutcs.lmphrf.PHRFCertificateValues.PHRFVariable;
+import com.walnutcs.mwphrf.PHRFCertificateValues.PHRFValue;
+import com.walnutcs.mwphrf.PHRFCertificateValues.PHRFVariable;
 
 /**
  * @author George Chlipala
  *
  */
-public class LMPHRFValidator {
+public class MWPHRFValidator {
 
 	private JFrame frame;
 	private final Action action = new LoadEntriesAction();
@@ -80,7 +80,9 @@ public class LMPHRFValidator {
 	private static String HELP_HS = "help/helpset.hs";
 	
 	private static String[] EXPORT_COLUMN_NAMES = new String[] {
-			"Sail Number", "Yacht Name", "Make Model", "Owner", "Circle", "Division", "Class", "PHRF Match", "Certificate Year", "Rating value", "Rating type" 
+			"Sail Number", "Yacht Name", "Make Model", "Owner", 
+			"Circle", "Division", "Class", "PHRF Match", 
+			"Certificate Year", "Rating value", "Rating type" 
 	};
 
 	
@@ -92,7 +94,7 @@ public class LMPHRFValidator {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					LMPHRFValidator window = new LMPHRFValidator();
+					MWPHRFValidator window = new MWPHRFValidator();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -104,7 +106,7 @@ public class LMPHRFValidator {
 	/**
 	 * 
 	 */
-	public LMPHRFValidator() throws IOException {
+	public MWPHRFValidator() throws IOException {
 		this.prefs = Preferences.userNodeForPackage(this.getClass());
 		initialize();
 	}
@@ -148,7 +150,7 @@ public class LMPHRFValidator {
 		mnApp = new JMenu("Help");
 		menuBar.add(mnApp);
 		
-		ClassLoader cl = LMPHRFValidator.class.getClassLoader();  
+		ClassLoader cl = MWPHRFValidator.class.getClassLoader();  
 		HelpSet hs = null;
 		URL hsURL = null;
 		try {
@@ -176,8 +178,8 @@ public class LMPHRFValidator {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(frame, 
-						"<html><h1>MWPHRF Validator</h1><p>Tool to retrive/validate MWPHRF (https://www.lmphrf.org) ratings for a set of boats</p><br><p>&copy; 2021 George Chlipala</p></html>",
-						"About LMPRHF Validator",
+						"<html><h1>MWPHRF Validator</h1><p>Tool to retrive/validate MWPHRF (https://www.mwphrf.org) ratings for a set of boats</p><br><p>&copy; 2021 George Chlipala</p></html>",
+						"About MWPRHF Validator",
 						JOptionPane.PLAIN_MESSAGE);
 			}
 		});

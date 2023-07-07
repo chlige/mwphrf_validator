@@ -1,4 +1,4 @@
-package com.walnutcs.lmphrf;
+package com.walnutcs.mwphrf;
 
 import java.util.ArrayList;
 import java.util.List;

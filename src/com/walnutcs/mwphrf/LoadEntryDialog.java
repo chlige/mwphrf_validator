@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.walnutcs.lmphrf;
+package com.walnutcs.mwphrf;
 
 import java.awt.Dialog;
 import java.awt.Frame;

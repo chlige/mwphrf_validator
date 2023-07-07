@@ -1,4 +1,4 @@
-package com.walnutcs.lmphrf;
+package com.walnutcs.mwphrf;
 
 public class PHRFCertificate implements Comparable<PHRFCertificate> {
 
