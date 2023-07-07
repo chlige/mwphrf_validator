@@ -4,12 +4,10 @@
 package com.walnutcs.mwphrf;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.geom.Rectangle2D;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
 
@@ -24,7 +22,6 @@ import javax.swing.JTextField;
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PagePanel;
-import com.walnutcs.mwphrf.PHRFCertificateValues.PHRFVariable;
 
 /**
  * @author George Chlipala
@@ -119,6 +116,8 @@ public class CertificateView {
 	
 	private class NextPageAction extends AbstractAction {
 
+		private static final long serialVersionUID = -3291119837261950439L;
+
 		public NextPageAction() {
 			putValue(NAME, ">");
 			putValue(SHORT_DESCRIPTION, "Next page");
@@ -147,6 +146,9 @@ public class CertificateView {
 
 
 	private class PrevPageAction extends AbstractAction {
+
+		private static final long serialVersionUID = -8434795594906433643L;
+
 
 		public PrevPageAction() {
 			putValue(NAME, "<");
@@ -177,6 +179,9 @@ public class CertificateView {
 	
 	private class ZoomAction extends AbstractAction {
 
+		private static final long serialVersionUID = 35800219873478017L;
+
+
 		public ZoomAction() {
 			putValue(NAME, "Zoom");
 			putValue(SHORT_DESCRIPTION, "Zoom in");
@@ -191,6 +196,9 @@ public class CertificateView {
 	}
 	
 	private class FullPageAction extends AbstractAction {
+
+		private static final long serialVersionUID = 3935864319841455577L;
+
 
 		public FullPageAction() {
 			putValue(NAME, "Fit");

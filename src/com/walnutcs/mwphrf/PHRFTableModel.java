@@ -41,7 +41,7 @@ public class PHRFTableModel extends AbstractTableModel {
 	}
 	
 	@Override
-	public Class getColumnClass(int column) {
+	public Class<? extends Object> getColumnClass(int column) {
 		switch (column) {
 		case 0: 
 			return Boolean.class;
@@ -115,7 +115,6 @@ public class PHRFTableModel extends AbstractTableModel {
 	
 	public void clearBoats() {
 		int childCount = this.phrfRoot.getEntryCount();
-		Object[] children = this.phrfRoot.getEntries().toArray(new PHRFMatchList[childCount]);
 		int[] childIndices = new int[childCount];
 		for ( int i = 0 ; i < childCount; i++ ) {
 			childIndices[i] = i;

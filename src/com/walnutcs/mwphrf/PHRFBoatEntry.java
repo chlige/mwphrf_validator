@@ -1,8 +1,6 @@
 package com.walnutcs.mwphrf;
 
 import java.util.Collection;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 public class PHRFBoatEntry {
 

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -132,7 +131,7 @@ public class PHRFMatchList {
 			int sailNumberCol = headers.indexOf("Sail #");
 			int yachtNameCol = headers.indexOf("Yacht Name");
 			int makeModelCol = headers.indexOf("Make-Model");
-			int issuedCol = headers.indexOf("Issued on");
+			// int issuedCol = headers.indexOf("Issued on");
 			int validCol = headers.indexOf("Valid For");
 			int BHCPcol = headers.indexOf("BHCP");
 			int DHCPcol = headers.indexOf("DHCP");
