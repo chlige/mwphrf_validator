@@ -203,4 +203,12 @@ public class BoatList extends AbstractTableModel {
 		return this.racingClasses;
 	}
 
+	public void clear() { 
+		this.classMap.clear();
+		this.entries.clear();
+		this.racingCircles.clear();
+		this.racingClasses.clear();
+		this.racingDivisions.clear();
+	}
+
 }

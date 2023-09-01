@@ -393,6 +393,7 @@ public class MWPHRFValidator {
 		int rowCount = sheet.getPhysicalNumberOfRows();	
 		
 		BoatList entryList = BoatList.getInstance();
+		entryList.clear();
 		
 		progressBar.setMaximum(rowCount - 1);
 		
