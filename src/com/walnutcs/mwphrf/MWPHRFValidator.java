@@ -29,6 +29,7 @@ import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -67,7 +68,6 @@ public class MWPHRFValidator {
 	
 	private JTable entryTable;
 	private TableRowSorter<BoatList> entrySorter;
-	// private JTreeTable ratingsTable;
 	private JProgressBar progressBar;	
 	private JLabel statusText;
 	
@@ -147,6 +147,57 @@ public class MWPHRFValidator {
 			}	
 		});	
 		
+		mnApp = new JMenu("Ratings");
+		menuBar.add(mnApp);
+		
+		LoadRatingsAction loadRatingsAction = new LoadRatingsAction();
+		
+		JMenu mwphrfMenu = new JMenu("MWPRHF");
+		
+		JMenuItem mntmMWPHRF = new JMenuItem("Find MWPHRF Ratings");
+		mwphrfMenu.add(mntmMWPHRF);
+		mntmMWPHRF.setAction(loadRatingsAction);
+		
+		JMenu mwphrfSetMenu = new JMenu("Set all");
+		
+		JMenuItem mntmSet = new JMenuItem("HCP");
+		mntmSet.setAction(new ValueSelectionAction(PHRFVariable.HCP));
+		mwphrfSetMenu.add(mntmSet);
+		
+		mntmSet = new JMenuItem("DHCP");
+		mntmSet.setAction(new ValueSelectionAction(PHRFVariable.DHCP));
+		mwphrfSetMenu.add(mntmSet);
+		
+		mntmSet = new JMenuItem("NSHCP");
+		mntmSet.setAction(new ValueSelectionAction(PHRFVariable.NSHCP));
+		mwphrfSetMenu.add(mntmSet);
+		
+		mwphrfMenu.add(mwphrfSetMenu);
+		
+		mnApp.add(mwphrfMenu);
+
+		/*
+		JMenuItem mntmORC = new JMenuItem("Load ORC Ratings");
+		mnApp.add(mntmORC);
+		mntmORC.setAction(null);
+		*/
+		
+		/*
+		JMenuItem mntmAnalyze = new JMenuItem("Analyze MWPHRF ToT");
+		mnApp.add(mntmAnalyze);
+		mntmAnalyze.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					MWPHRFAnalyzer analyzer = new MWPHRFAnalyzer();
+					analyzer.show();
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(null, e.getLocalizedMessage(), "Error!", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		*/
+		
 		mnApp = new JMenu("Help");
 		menuBar.add(mnApp);
 		
@@ -184,7 +235,6 @@ public class MWPHRFValidator {
 			}
 		});
 		
-		
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BorderLayout(0, 0));
 
@@ -215,15 +265,16 @@ public class MWPHRFValidator {
 		classSelector.setAction(new SelectClassAction());
 		horizontalBox.add(classSelector);
 		
+		/*
 		// Create a second line for the PHRF functions.
 		horizontalBox = Box.createHorizontalBox();		
 		verticalBox.add(horizontalBox);		
 		
 		// Create button to trigger load of ratings from MWPHRF
 		JButton loadButton = new JButton("Load ratings from MWPHRF");
-		loadButton.setAction(new LoadRatingsAction());
+		loadButton.setAction(loadRatingsAction);
 		horizontalBox.add(loadButton);
-		
+				
 		horizontalBox.add(new JLabel("Select ratings variable:"));
 		JButton hcpButton = new JButton("HCP");
 		hcpButton.setAction(new ValueSelectionAction(PHRFVariable.HCP));
@@ -236,6 +287,7 @@ public class MWPHRFValidator {
 		JButton nshcpButton = new JButton("NSHCP");
 		nshcpButton.setAction(new ValueSelectionAction(PHRFVariable.NSHCP));
 		horizontalBox.add(nshcpButton);
+		*/
 
 		// Create the YS entry table
 		entryTable = new JTable(BoatList.getInstance());
@@ -257,38 +309,10 @@ public class MWPHRFValidator {
 					if ( selBoat != null ) {
 						PHRFCertificate selCert = selBoat.getCertList().getSelectedCertificate();
 						if ( selCert != null ) {
-							
 							try {
 								URL pdfURL = new URL("https://mwphrf.org/" + selCert.getURL());
 								CertificateView.displayCertificate(pdfURL, 
 										selBoat.toString().concat(String.format(" %d", selCert.getYear())));
-
-								/*
-								JFrame pdfFrame = new JFrame(selBoat.toString().concat(String.format(" %d", selCert.getYear())));
-								pdfFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-								PagePanel pdfPanel = new PagePanel();
-								
-								pdfFrame.add(new JScrollPane(pdfPanel));
-								
-								ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-								
-								InputStream inStream = pdfURL.openStream();
-								
-								int n = 0;
-								byte[] buffer = new byte[4096 * 1024];
-								while ( -1 != (n = inStream.read(buffer)) ) {
-									byteStream.write(buffer, 0, n);
-								}
-								byteStream.flush();
-								ByteBuffer pdfBuffer = ByteBuffer.wrap(byteStream.toByteArray());
-								PDFFile pdfFile = new PDFFile(pdfBuffer);
-								
-								PDFPage page = pdfFile.getPage(0);
-								
-								pdfFrame.pack();
-								pdfFrame.setVisible(true);
-								pdfPanel.showPage(page);
-								*/
 							} catch ( IOException e ) {
 								JOptionPane.showMessageDialog(frame, "Unable to retrieve certificate PDF!\n" + e.getLocalizedMessage(), 
 										"ERROR", JOptionPane.ERROR_MESSAGE);
@@ -828,18 +852,53 @@ public class MWPHRFValidator {
 	private class LoadRatingsAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
+		
+		JCheckBox yachtName = new JCheckBox("Yacht Name");
+		JCheckBox sailNumber = new JCheckBox("Sail #");
+		JCheckBox makeModel = new JCheckBox("Make-Model");
+		
+		Box dialogBox = Box.createVerticalBox();
 
 		public LoadRatingsAction() { 
 			putValue(NAME, "Find Ratings");
-			putValue(SHORT_DESCRIPTION, "Find PHRF Ratings");
+			putValue(SHORT_DESCRIPTION, "Find MWPHRF Ratings");
+			
+			// Create the layout for the Confirmation Dialog.
+			dialogBox.add(new JLabel("Search by:"));
+			dialogBox.add(yachtName);
+			dialogBox.add(sailNumber);
+			dialogBox.add(makeModel);
 		}
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			progressBar.setMaximum(entryTable.getRowCount());
-			JButton thisButton = (JButton) e.getSource();
 			
-			thisButton.setEnabled(false);
+			if ( entryTable.getRowCount() == 0 ) {
+				// If there are not any entries in the entryTable, display and error and return.
+				JOptionPane.showMessageDialog(null, "You must load entries before trying to find MWPHRF ratings!", "No entries", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			// Show the confirmation dialog
+			int response = JOptionPane.showConfirmDialog(null, 
+						dialogBox,
+						"Load ratings from MWPHRF",
+						JOptionPane.OK_CANCEL_OPTION,
+						JOptionPane.PLAIN_MESSAGE);
+			
+			// If it was closed or cancelled, then skip.
+			if ( response == JOptionPane.CLOSED_OPTION || response == JOptionPane.CANCEL_OPTION ) {
+				return;
+			}
+	
+			progressBar.setMaximum(entryTable.getRowCount());
+
+			Object source = e.getSource();
+			
+			if ( source instanceof JButton ) {
+				JButton thisButton = (JButton)source;
+				thisButton.setEnabled(false);				
+			}
 			
 			SwingWorker phrfSearch = new SwingWorker() {
 				@Override
@@ -852,7 +911,9 @@ public class MWPHRFValidator {
 					
 					for ( int row = 0; row < entryTable.getRowCount() ; row++ ) {
 						progressBar.setValue(row);
-						boatList.getBoat(entryTable.convertRowIndexToModel(row)).findMatches();
+						boatList.getBoat(entryTable.convertRowIndexToModel(row)).findMatches(sailNumber.isSelected(),
+								 															 yachtName.isSelected(),
+								 															 makeModel.isSelected());
 						entryTable.repaint();
 					}
 					return boatList;
@@ -862,7 +923,10 @@ public class MWPHRFValidator {
 				protected void done() {
 					entryTable.setEnabled(true);
 					progressBar.setValue(0);
-					thisButton.setEnabled(true);
+					if ( source instanceof JButton ) {
+						JButton thisButton = (JButton)source;
+						thisButton.setEnabled(true);
+					}
 //					ratingsTable.repaint();
 					statusText.setText("MWPHRF Ratings loaded.");
 				}
@@ -871,7 +935,6 @@ public class MWPHRFValidator {
 		}
 	}
 
-	
 	private class ValueSelectionAction extends AbstractAction {
 		
 		/**
@@ -902,12 +965,16 @@ public class MWPHRFValidator {
 					}
 				}
 				entryTable.repaint();
-			}
-			
+			}	
+		}
+	}
+	
+	private class InitialORC extends AbstractAction {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
 			
 		}
-		
-		
 	}
 	
 }

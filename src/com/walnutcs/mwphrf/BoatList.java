@@ -72,8 +72,6 @@ public class BoatList extends AbstractTableModel {
 //		return false;
 	}
 
-	
-	
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		switch ( columnIndex ) {
@@ -201,6 +199,10 @@ public class BoatList extends AbstractTableModel {
 
 	public SortedSet<String> getClasses() { 
 		return this.racingClasses;
+	}
+	
+	public List<BoatEntry> getEntries() {
+		return this.entries;
 	}
 
 	public void clear() { 
