@@ -12,7 +12,6 @@ public class BoatEntry {
 	private String racingCircle;
 	private String racingDivision;
 	private String racingClass;
-	private PHRFCertificate certificate;
 	private String selRatingVariable = "HCP";	
 	private PHRFMatchList phrfMatches;
 	
@@ -57,7 +56,10 @@ public class BoatEntry {
 	}
 	
 	public PHRFCertificate getCertificate() {
-		return this.certificate;
+		PHRFBoatEntry phrfBoat = this.getMatchList().getSelectedBoat();
+		if ( phrfBoat != null )
+			return phrfBoat.getCertList().getSelectedCertificate();
+		return null;
 	}
 	
 	public void setRatingVariable(String ratingVariable) {
@@ -69,11 +71,13 @@ public class BoatEntry {
 	}
 	
 	public Integer getRating() {
-		if ( this.certificate == null ) { 
+		PHRFCertificate certificate = this.getCertificate();
+		
+		if ( certificate == null ) { 
 			return null;
 		}
 		
-		PHRFCertificateValues values = this.certificate.getValues();
+		PHRFCertificateValues values = certificate.getValues();
 		
 		switch ( this.selRatingVariable ) {
 		case "HCP": return values.getHCP();
