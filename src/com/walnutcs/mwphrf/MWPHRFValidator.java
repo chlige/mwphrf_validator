@@ -13,11 +13,14 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
@@ -48,6 +51,8 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableRowSorter;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -71,6 +76,8 @@ public class MWPHRFValidator {
 	private JProgressBar progressBar;	
 	private JLabel statusText;
 	
+	private JMenu mwphrfMenu;
+	
 	private Preferences prefs;
 	
 	private JComboBox<String> circleSelector;
@@ -85,6 +92,12 @@ public class MWPHRFValidator {
 			"Certificate Year", "Rating value", "Rating type" 
 	};
 
+	// Columns in a Railmeets entries spreadsheet
+	private static final String RM_BOATNAME_COL = "Boat Name";
+	private static final String RM_OWNERNAME_COL = "Name";
+	private static final String RM_POSITION_COL = "Position";
+	private static final String RM_SAILNUMBER_COL = "Sail Number";
+	private static final String RM_BOATTYPE_COL = "Boat Type";
 	
 	/**
 	 * Launch the application.
@@ -150,44 +163,16 @@ public class MWPHRFValidator {
 		mnApp = new JMenu("Ratings");
 		menuBar.add(mnApp);
 		
-		LoadRatingsAction loadRatingsAction = new LoadRatingsAction();
-		
-		JMenu mwphrfMenu = new JMenu("MWPRHF");
-		
-		JMenuItem mntmMWPHRF = new JMenuItem("Find MWPHRF Ratings");
-		mwphrfMenu.add(mntmMWPHRF);
-		mntmMWPHRF.setAction(loadRatingsAction);
-		
-		JMenu mwphrfSetMenu = new JMenu("Set all");
-		
-		JMenuItem mntmSet = new JMenuItem("HCP");
-		mntmSet.setAction(new ValueSelectionAction(PHRFVariable.HCP));
-		mwphrfSetMenu.add(mntmSet);
-		
-		mntmSet = new JMenuItem("DHCP");
-		mntmSet.setAction(new ValueSelectionAction(PHRFVariable.DHCP));
-		mwphrfSetMenu.add(mntmSet);
-		
-		mntmSet = new JMenuItem("NSHCP");
-		mntmSet.setAction(new ValueSelectionAction(PHRFVariable.NSHCP));
-		mwphrfSetMenu.add(mntmSet);
-		
-		mwphrfMenu.add(mwphrfSetMenu);
-		
-		mnApp.add(mwphrfMenu);
+		this.mwphrfMenu = new JMenu("MWPRHF");
 
-		/*
-		JMenuItem mntmORC = new JMenuItem("Load ORC Ratings");
-		mnApp.add(mntmORC);
-		mntmORC.setAction(null);
-		*/
-		
-		/*
+		mwphrfMenu.add(new JMenuItem(new LoadRatingsAction()));
+		mwphrfMenu.add(new JMenuItem(new ValueSelectionAction()));
+
 		JMenuItem mntmAnalyze = new JMenuItem("Analyze MWPHRF ToT");
-		mnApp.add(mntmAnalyze);
+		mwphrfMenu.add(mntmAnalyze);
 		mntmAnalyze.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent ev) {
 				try {
 					MWPHRFAnalyzer analyzer = new MWPHRFAnalyzer();
 					analyzer.show();
@@ -196,7 +181,16 @@ public class MWPHRFValidator {
 				}
 			}
 		});
+
+		mnApp.add(mwphrfMenu);
+		
+		/*
+		JMenuItem mntmORC = new JMenuItem("Load ORC Ratings");
+		mnApp.add(mntmORC);
+		mntmORC.setAction(null);
 		*/
+		
+
 		
 		mnApp = new JMenu("Help");
 		menuBar.add(mnApp);
@@ -456,6 +450,43 @@ public class MWPHRFValidator {
 		progressBar.setValue(0);
 	}
 	
+	/**
+	 * Load entries from a Railmeets entry spreadsheet
+	 * 
+	 * @param entryFile File object for Railmeets spreadsheet
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	private void loadRailmeetEntries(File aFile) throws FileNotFoundException, IOException {
+		Reader fileIn = new FileReader(aFile);
+		List<CSVRecord> records = CSVFormat.DEFAULT.builder()
+				.setHeader()
+				.setSkipHeaderRecord(true)
+				.build()
+				.parse(fileIn)
+				.getRecords();
+		
+		statusText.setText("Loading Railmeets entries");
+		
+		BoatList entryList = BoatList.getInstance();
+		entryList.clear();
+		
+		progressBar.setMaximum(records.size() - 1);
+		
+		for ( int r = 0; r < records.size(); r++  ) {
+			CSVRecord row = records.get(r);
+			if ( row.get(RM_POSITION_COL).equalsIgnoreCase("skipper") ) {
+				BoatEntry entry = new BoatEntry(row.get(RM_BOATNAME_COL), 
+						row.get(RM_SAILNUMBER_COL), 
+						row.get(RM_BOATTYPE_COL), 
+						row.get(RM_OWNERNAME_COL), "NONE", "NONE", "NONE");
+				entryList.addBoat(entry);				
+			}
+			progressBar.setValue(r - 1);
+		}
+		
+	}
+	
 	private void saveEntries(File outputFile, FileFilter filter, boolean saveVisible) throws IOException {
 		String fileExt = "tsv";
 		
@@ -612,7 +643,7 @@ public class MWPHRFValidator {
 	
 	
 	/**
-	 * Action to to load Entries
+	 * Action to to load Entries from a YachtScoring file.
 	 * 
 	 * @author George Chlipala
 	 */
@@ -629,14 +660,21 @@ public class MWPHRFValidator {
 			JFileChooser fileChooser = new JFileChooser();
 			String wd = prefs.get("last_path", System.getProperty("user.home"));
 			fileChooser.setCurrentDirectory(new File(wd));
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel file", "xls");
-			fileChooser.setFileFilter(filter);
+			FileNameExtensionFilter ysFilter = new FileNameExtensionFilter("Excel file (YachtScoring)", "xls");
+			fileChooser.setFileFilter(ysFilter);
+			FileNameExtensionFilter rmFilter = new FileNameExtensionFilter("CSV file (Railmeets)", "csv");
+			fileChooser.addChoosableFileFilter(rmFilter);
 			int retVal = fileChooser.showOpenDialog(frame);
 			if ( retVal == JFileChooser.APPROVE_OPTION ) {
 				try {
 					File selFile = fileChooser.getSelectedFile();
 					prefs.put("last_path", selFile.getParent());
-					loadEntries(selFile);
+					FileFilter selFilter = fileChooser.getFileFilter();
+					if ( selFilter.getDescription().equalsIgnoreCase("CSV file (Railmeets)") ) {
+						loadRailmeetEntries(selFile);
+					} else {
+						loadEntries(selFile);						
+					}
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(frame, e1.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 					e1.printStackTrace();
@@ -645,6 +683,9 @@ public class MWPHRFValidator {
 		}
 	}
 	
+	/**
+	 * Action to Save Entries to a XLS, CSV or TSV file. 
+	 */
 	private class SaveEntriesAction extends AbstractAction {
 		
 		/**
@@ -703,6 +744,9 @@ public class MWPHRFValidator {
 		}	
 	}
 
+	/**
+	 * Action called by JComboBox for the circle.
+	 */
 	private class SelectCircleAction extends AbstractAction {
 		
 		/**
@@ -735,6 +779,12 @@ public class MWPHRFValidator {
 		}
 	}
 	
+	/**
+	 * Row filter for the starting circle.
+	 * 
+	 * @param <M>
+	 * @param <I>
+	 */
 	private class CircleRowFilter<M extends BoatList, I extends Integer> extends RowFilter<M,I> {
 
 		private String selCircle = null;
@@ -752,6 +802,9 @@ public class MWPHRFValidator {
 		
 	}
 	
+	/**
+	 * Action called by JComboBox for divisions
+	 */
 	private class SelectDivAction extends AbstractAction {
 		
 		private static final long serialVersionUID = 1L;
@@ -782,6 +835,12 @@ public class MWPHRFValidator {
 		}
 	}
 	
+	/**
+	 * Row filter for the division
+	 * 
+	 * @param <M>
+	 * @param <I>
+	 */
 	private class DivRowFilter<M extends BoatList, I extends Integer> extends RowFilter<M,I> {
 
 		private String selCircle = null;
@@ -802,6 +861,9 @@ public class MWPHRFValidator {
 		
 	}
 
+	/**
+	 * Action for JComboxBox for the class
+	 */
 	private class SelectClassAction extends AbstractAction {
 		
 		private static final long serialVersionUID = 1L;
@@ -826,6 +888,12 @@ public class MWPHRFValidator {
 		}
 	}
 	
+	/**
+	 * Row filter for the class
+	 * 
+	 * @param <M>
+	 * @param <I>
+	 */
 	private class ClassRowFilter<M extends BoatList, I extends Integer> extends RowFilter<M,I> {
 
 		private String selCircle = null;
@@ -849,6 +917,9 @@ public class MWPHRFValidator {
 		
 	}
 	
+	/**
+	 * Action called by "Find Ratings..." menu item for MWPHRF ratings
+	 */
 	private class LoadRatingsAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -860,7 +931,7 @@ public class MWPHRFValidator {
 		Box dialogBox = Box.createVerticalBox();
 
 		public LoadRatingsAction() { 
-			putValue(NAME, "Find Ratings");
+			putValue(NAME, "Find Ratings...");
 			putValue(SHORT_DESCRIPTION, "Find MWPHRF Ratings");
 			
 			// Create the layout for the Confirmation Dialog.
@@ -900,20 +971,28 @@ public class MWPHRFValidator {
 				thisButton.setEnabled(false);				
 			}
 			
-			SwingWorker phrfSearch = new SwingWorker() {
+			mwphrfMenu.setEnabled(false);
+			
+			boolean searchSailNumber = sailNumber.isSelected();
+			boolean searchYachtName = yachtName.isSelected();
+			boolean searchMakeModel = makeModel.isSelected();
+			/* 
+			 * Create a SwingWorker to perform the search.  
+			 * The search make take a while so, it is best to run this asynchronously.
+			 */
+			SwingWorker<BoatList, Object> phrfSearch = new SwingWorker<BoatList, Object> () {
 				@Override
-				protected Object doInBackground() throws Exception {
-					
+				protected BoatList doInBackground() throws Exception {
 					BoatList boatList = BoatList.getInstance();
 					
 					statusText.setText("Loading MWPHRF ratings");
 					entryTable.setEnabled(false);
 					
 					for ( int row = 0; row < entryTable.getRowCount() ; row++ ) {
-						progressBar.setValue(row);
-						boatList.getBoat(entryTable.convertRowIndexToModel(row)).findMatches(sailNumber.isSelected(),
-								 															 yachtName.isSelected(),
-								 															 makeModel.isSelected());
+						boatList.getBoat(entryTable.convertRowIndexToModel(row)).findMatches(searchSailNumber,
+								 															 searchYachtName,
+								 															 searchMakeModel);
+						progressBar.setValue(row + 1);
 						entryTable.repaint();
 					}
 					return boatList;
@@ -927,7 +1006,7 @@ public class MWPHRFValidator {
 						JButton thisButton = (JButton)source;
 						thisButton.setEnabled(true);
 					}
-//					ratingsTable.repaint();
+					mwphrfMenu.setEnabled(true);
 					statusText.setText("MWPHRF Ratings loaded.");
 				}
 			};
@@ -941,31 +1020,49 @@ public class MWPHRFValidator {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		private PHRFVariable variable;
 		
-		public ValueSelectionAction(PHRFVariable variable) {
-			this.variable = variable;
-			putValue(NAME, variable.toString());
-			putValue(SHORT_DESCRIPTION, String.format("Select %s rating", variable.toString()));
+		public ValueSelectionAction() {
+			putValue(NAME, "Select variable...");
+			putValue(SHORT_DESCRIPTION, "Set all MPHRF variables.");
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			PHRFVariable[] options = { PHRFVariable.HCP, PHRFVariable.DHCP, PHRFVariable.NSHCP };
+			
+			Object varOption = JOptionPane.showInputDialog(null,
+					"Rating variable to assign...",
+					"Select MPWHRF variable",
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					options,
+					options[0]);
+			
+			if ( varOption == null ) {
+				return;
+			}
+			
+			PHRFVariable variable = (PHRFVariable) varOption;
+			
 			BoatList boatList = BoatList.getInstance();
 			statusText.setText("Selecting MWPHRF rating");
+			progressBar.setMaximum(entryTable.getRowCount());
+			progressBar.setValue(0);
 			
 			for ( int row = 0; row < entryTable.getRowCount() ; row++ ) {
-				progressBar.setValue(row);
 				BoatEntry entry = boatList.getBoat(entryTable.convertRowIndexToModel(row));
 				PHRFBoatEntry phrfBoat = entry.getMatchList().getSelectedBoat();
 				if ( phrfBoat != null ) {
 					PHRFCertificate cert = phrfBoat.getCertList().getSelectedCertificate();
 					if ( cert != null ) {
-						cert.getValues().setSelectedVariable(this.variable);
+						cert.getValues().setSelectedVariable(variable);
 					}
 				}
+				progressBar.setValue(row + 1);
 				entryTable.repaint();
-			}	
+			}
+			statusText.setText("");
+			progressBar.setValue(0);
 		}
 	}
 	
