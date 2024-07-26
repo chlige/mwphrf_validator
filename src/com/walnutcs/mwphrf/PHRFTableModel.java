@@ -7,6 +7,9 @@ import java.io.IOException;
 
 import javax.swing.table.AbstractTableModel;
 
+import com.walnutcs.mwphrf.phrf.PHRFMatchList;
+import com.walnutcs.mwphrf.phrf.PHRFRootNode;
+
 
 /**
  * @author George Chlipala

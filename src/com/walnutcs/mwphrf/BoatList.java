@@ -12,7 +12,12 @@ import java.util.TreeSet;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.walnutcs.mwphrf.PHRFCertificateValues.PHRFValue;
+import com.walnutcs.mwphrf.phrf.PHRFBoatEntry;
+import com.walnutcs.mwphrf.phrf.PHRFCertificate;
+import com.walnutcs.mwphrf.phrf.PHRFCertificateList;
+import com.walnutcs.mwphrf.phrf.PHRFCertificateValues;
+import com.walnutcs.mwphrf.phrf.PHRFMatchList;
+import com.walnutcs.mwphrf.phrf.PHRFCertificateValues.PHRFValue;
 
 /**
  * @author George Chlipala

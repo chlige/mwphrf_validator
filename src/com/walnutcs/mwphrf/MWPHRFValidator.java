@@ -59,8 +59,10 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellType;
 
-import com.walnutcs.mwphrf.PHRFCertificateValues.PHRFValue;
-import com.walnutcs.mwphrf.PHRFCertificateValues.PHRFVariable;
+import com.walnutcs.mwphrf.phrf.PHRFBoatEntry;
+import com.walnutcs.mwphrf.phrf.PHRFCertificate;
+import com.walnutcs.mwphrf.phrf.PHRFCertificateValues.PHRFValue;
+import com.walnutcs.mwphrf.phrf.PHRFCertificateValues.PHRFVariable;
 
 /**
  * @author George Chlipala

@@ -9,6 +9,9 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 
+import com.walnutcs.mwphrf.phrf.PHRFBoatEntry;
+import com.walnutcs.mwphrf.phrf.PHRFMatchList;
+
 /**
  * @author George Chlipala
  *

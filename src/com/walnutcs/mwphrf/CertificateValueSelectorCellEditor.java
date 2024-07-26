@@ -9,7 +9,8 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 
-import com.walnutcs.mwphrf.PHRFCertificateValues.PHRFValue;
+import com.walnutcs.mwphrf.phrf.PHRFCertificateValues;
+import com.walnutcs.mwphrf.phrf.PHRFCertificateValues.PHRFValue;
 
 /**
  * @author George Chlipala

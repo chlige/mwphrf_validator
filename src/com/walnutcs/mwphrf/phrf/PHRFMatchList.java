@@ -1,4 +1,4 @@
-package com.walnutcs.mwphrf;
+package com.walnutcs.mwphrf.phrf;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,6 +12,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import com.walnutcs.mwphrf.BoatEntry;
 
 public class PHRFMatchList {
 

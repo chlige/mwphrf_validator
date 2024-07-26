@@ -3,6 +3,11 @@ package com.walnutcs.mwphrf;
 import java.io.IOException;
 import java.util.List;
 
+import com.walnutcs.mwphrf.phrf.PHRFBoatEntry;
+import com.walnutcs.mwphrf.phrf.PHRFCertificate;
+import com.walnutcs.mwphrf.phrf.PHRFCertificateValues;
+import com.walnutcs.mwphrf.phrf.PHRFMatchList;
+
 public class BoatEntry {
 	
 	private String yachtName;
