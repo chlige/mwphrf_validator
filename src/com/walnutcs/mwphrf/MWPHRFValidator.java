@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +64,9 @@ import com.walnutcs.mwphrf.phrf.PHRFBoatEntry;
 import com.walnutcs.mwphrf.phrf.PHRFCertificate;
 import com.walnutcs.mwphrf.phrf.PHRFCertificateValues.PHRFValue;
 import com.walnutcs.mwphrf.phrf.PHRFCertificateValues.PHRFVariable;
+import com.walnutcs.mwphrf.yachtscoring.LoadYachtScoringDialog;
+import com.walnutcs.mwphrf.yachtscoring.YSEntry;
+import com.walnutcs.mwphrf.yachtscoring.YSEvent;
 
 /**
  * @author George Chlipala
@@ -71,7 +75,6 @@ import com.walnutcs.mwphrf.phrf.PHRFCertificateValues.PHRFVariable;
 public class MWPHRFValidator {
 
 	private JFrame frame;
-	private final Action action = new LoadEntriesAction();
 	
 	private JTable entryTable;
 	private TableRowSorter<BoatList> entrySorter;
@@ -106,6 +109,8 @@ public class MWPHRFValidator {
 	 */
 	public static void main(String[] args) {
 		System.setProperty("line.separator", "\r\n");
+//		System.setProperty("com.sun.security.enableAIAcaIssuers", "true");
+		System.err.println(System.getProperty("javax.net.ssl.trustStore"));
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -143,7 +148,11 @@ public class MWPHRFValidator {
 		
 		JMenuItem mntmLoad = new JMenuItem("Load entries...");
 		mnApp.add(mntmLoad);
-		mntmLoad.setAction(action);
+		mntmLoad.setAction(new LoadEntriesAction());
+		
+		mntmLoad = new JMenuItem("Load from YachtScoring...");
+		mnApp.add(mntmLoad);
+		mntmLoad.setAction(new LoadYachtScoringAction());
 		
 		JMenuItem mntmExport = new JMenuItem("Save displayed entries...");
 		mnApp.add(mntmExport);
@@ -191,9 +200,7 @@ public class MWPHRFValidator {
 		mnApp.add(mntmORC);
 		mntmORC.setAction(null);
 		*/
-		
-
-		
+			
 		mnApp = new JMenu("Help");
 		menuBar.add(mnApp);
 		
@@ -202,7 +209,8 @@ public class MWPHRFValidator {
 		URL hsURL = null;
 		try {
 			hsURL = HelpSet.findHelpSet(cl, HELP_HS);
-			hs = new HelpSet(null, hsURL);
+			if ( hsURL != null ) 
+				hs = new HelpSet(null, hsURL);
 		} catch (Exception ee) {
 			JOptionPane.showMessageDialog(frame, 
 					ee.getMessage(),
@@ -214,8 +222,8 @@ public class MWPHRFValidator {
 		
 		JMenuItem mntm = new JMenuItem("Help Contents");
 		mnApp.add(mntm);
-		HelpBroker hb = hs.createHelpBroker();
 		if ( hs != null ) {
+			HelpBroker hb = hs.createHelpBroker();
 			mntm.addActionListener(new CSH.DisplayHelpFromSource( hb ));
 		}
 		
@@ -327,6 +335,7 @@ public class MWPHRFValidator {
 
 		// Add pane for status bar
 		panel = new JPanel();
+		panel.setMinimumSize(new Dimension(10,25));
 		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 		panel.add(Box.createHorizontalGlue());
 		topPanel.add(panel, BorderLayout.SOUTH);
@@ -449,6 +458,43 @@ public class MWPHRFValidator {
 
 		// Set the final status
 		statusText.setText("YachtScoring entries loaded");
+		progressBar.setValue(0);
+	}
+	
+	/**
+	 * Load entries from a YachtScoring event (online)
+	 * 
+	 * @param event YSEvent object from YachtScoring
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws URISyntaxException 
+	 */
+	private void loadYachtScoringEntries(YSEvent event) throws IOException, URISyntaxException {
+		statusText.setText("Loading YachtScoring entries");
+		
+		BoatList entryList = BoatList.getInstance();
+		entryList.clear();
+
+		progressBar.setIndeterminate(true);
+
+		List<YSEntry> entries = event.getEntries();
+		
+		for ( YSEntry entry : entries ) {
+			entryList.addBoat(entry);
+		}
+		
+		// Setup the selectors for filtering the table.
+		circleSelector.removeAllItems();
+		circleSelector.addItem("Select...");
+		for ( String circle : entryList.getCircles() ) {
+			circleSelector.addItem(circle);
+		}
+		divSelector.removeAllItems();
+		classSelector.removeAllItems();
+
+		// Set the final status
+		statusText.setText("YachtScoring entries loaded");
+		progressBar.setIndeterminate(false);
 		progressBar.setValue(0);
 	}
 	
@@ -678,6 +724,37 @@ public class MWPHRFValidator {
 						loadEntries(selFile);						
 					}
 				} catch (IOException e1) {
+					JOptionPane.showMessageDialog(frame, e1.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+					e1.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Action to to load Entries from a YachtScoring, directly.
+	 * 
+	 * @author George Chlipala
+	 */
+	private class LoadYachtScoringAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		
+		private static final long serialVersionUID = 1L;
+		public LoadYachtScoringAction() {
+			putValue(NAME, "Load from YachtScoring...");
+			putValue(SHORT_DESCRIPTION, "Load from YachtScoring");		
+			
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			YSEvent selectedEvent = LoadYachtScoringDialog.showSelectionDialog(frame, "Select Event");
+			if ( selectedEvent != null ) {
+				try {
+					loadYachtScoringEntries(selectedEvent);
+				} catch (IOException | URISyntaxException e1) {
+					statusText.setText("");
 					JOptionPane.showMessageDialog(frame, e1.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 					e1.printStackTrace();
 				}
