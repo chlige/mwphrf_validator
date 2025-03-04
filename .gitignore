@@ -3,3 +3,8 @@
 .settings/
 bin/
 lib/
+/target/
+
+# Ignore any files from macOS
+.DS_Store
+**/.DS_Store
