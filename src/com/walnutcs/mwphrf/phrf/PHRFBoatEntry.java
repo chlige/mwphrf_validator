@@ -2,6 +2,8 @@ package com.walnutcs.mwphrf.phrf;
 
 import java.util.Collection;
 
+import com.walnutcs.mwphrf.BoatEntry;
+
 public class PHRFBoatEntry {
 
 	private String yachtName = null;

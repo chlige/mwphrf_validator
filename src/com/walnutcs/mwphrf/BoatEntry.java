@@ -10,18 +10,24 @@ import com.walnutcs.mwphrf.phrf.PHRFMatchList;
 
 public class BoatEntry {
 	
-	private String yachtName;
-	private String sailNumber;
-	private String makeModel;
-	private String ownerName;
-	private String racingCircle;
-	private String racingDivision;
-	private String racingClass;
-	private String selRatingVariable = "HCP";	
-	private PHRFMatchList phrfMatches;
+	protected String yachtName;
+	protected String sailNumber;
+	protected String makeModel;
+	protected String ownerName;
+	protected String racingCircle;
+	protected String racingDivision;
+	protected String racingClass;
+	protected Integer requestedRating = null;
+	protected String selRatingVariable = "HCP";
+	protected PHRFMatchList phrfMatches;
+	
+	protected BoatEntry() {
+		this.phrfMatches = new PHRFMatchList(this);
+	}
 	
 	public BoatEntry(String yachtName, String sailNumber, String makeModel, String ownerName, 
 			String racingCircle, String racingDivision, String racingClass) {
+		this();
 		this.yachtName = yachtName;
 		this.sailNumber = sailNumber;
 		this.makeModel = makeModel;
@@ -29,7 +35,6 @@ public class BoatEntry {
 		this.racingCircle = racingCircle;
 		this.racingDivision = racingDivision;
 		this.racingClass = racingClass;
-		this.phrfMatches = new PHRFMatchList(this);
 	}
 
 	public String getYachtName() {
