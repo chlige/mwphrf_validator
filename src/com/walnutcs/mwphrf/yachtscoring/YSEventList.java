@@ -12,10 +12,6 @@ import java.util.List;
 import javax.swing.JProgressBar;
 import javax.swing.table.AbstractTableModel;
 
-import com.walnutcs.mwphrf.phrf.PHRFCertificateList;
-import com.walnutcs.mwphrf.phrf.PHRFCertificateValues;
-import com.walnutcs.mwphrf.phrf.PHRFMatchList;
-
 /**
  * 
  */

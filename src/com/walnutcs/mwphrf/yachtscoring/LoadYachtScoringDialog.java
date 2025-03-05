@@ -32,8 +32,10 @@ import javax.swing.table.TableRowSorter;
  */
 public class LoadYachtScoringDialog extends JDialog {
 	
+	private static final long serialVersionUID = 1L;
+	
 	private YSEvent selectedEvent = null;
-	private JFrame frame;
+	
 	private JTable eventTable;
 	private JTextField searchField;
 	private JButton searchButton;
@@ -120,6 +122,8 @@ public class LoadYachtScoringDialog extends JDialog {
 		
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
 			public void actionPerformed(ActionEvent e) {
 				selectedEvent = null;
 				setVisible(false);
@@ -138,6 +142,8 @@ public class LoadYachtScoringDialog extends JDialog {
 	}
 	
 	private class RunSearchAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -171,6 +177,8 @@ public class LoadYachtScoringDialog extends JDialog {
 	}
 	
 	private class SelectEventAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {

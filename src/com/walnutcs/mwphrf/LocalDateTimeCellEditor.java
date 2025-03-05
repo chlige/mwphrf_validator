@@ -17,6 +17,7 @@ import javax.swing.table.TableCellEditor;
 public class LocalDateTimeCellEditor extends DefaultCellEditor implements TableCellEditor {
 
 	
+	private static final long serialVersionUID = 1L;
 	private JFormattedTextField field;
 	
 	public LocalDateTimeCellEditor(DateTimeFormatter format) {

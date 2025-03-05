@@ -29,7 +29,6 @@ import javax.help.CSH;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -146,7 +145,7 @@ public class MWPHRFValidator {
 		JMenu mnApp = new JMenu("File");
 		menuBar.add(mnApp);
 		
-		JMenuItem mntmLoad = new JMenuItem("Load entries...");
+		JMenuItem mntmLoad = new JMenuItem("Load from file...");
 		mnApp.add(mntmLoad);
 		mntmLoad.setAction(new LoadEntriesAction());
 		
@@ -801,9 +800,9 @@ public class MWPHRFValidator {
 			if ( retVal == JFileChooser.APPROVE_OPTION ) {
 				File selFile = fileChooser.getSelectedFile();
 				prefs.put("last_path", selFile.getParent());
-				SwingWorker saveEntries = new SwingWorker() {
+				SwingWorker<File, Object> saveEntries = new SwingWorker<File, Object>() {
 					@Override
-					protected Object doInBackground() throws Exception {
+					protected File doInBackground() throws Exception {
 						try {
 							statusText.setText("Saving entries to file.");
 							saveEntries(selFile, fileChooser.getFileFilter(), saveVisible);

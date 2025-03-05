@@ -16,6 +16,7 @@ import javax.swing.JFormattedTextField.AbstractFormatter;
  */
 public class LocalDateTimeFormatter extends AbstractFormatter {
 
+	private static final long serialVersionUID = 1L;
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("[mm/dd/yyyy ]HH:mm:ss");
 	
 	/**
